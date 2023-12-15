@@ -1,0 +1,100 @@
+   <ClaimsProvider>
+      <Domain>local</Domain>
+      <DisplayName>Local Account2</DisplayName>
+      <TechnicalProfiles>
+        <TechnicalProfile Id="LocalAccount-BASE">
+          <DisplayName>Email signup2</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.SelfAssertedAttributeProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <Metadata>
+            <Item Key="SignUpTarget">SignUpWithLogonEmailExchange</Item>
+            <Item Key="setting.operatingMode">Email</Item>
+            <Item Key="ContentDefinitionReferenceId">api.localaccountsignin</Item>
+            <Item Key="IncludeClaimResolvingInClaimsHandling">true</Item>
+          </Metadata>
+          <IncludeInSso>false</IncludeInSso>
+          <InputClaims>
+            <InputClaim ClaimTypeReferenceId="signInName" DefaultValue="{OIDC:LoginHint}" AlwaysUseDefaultValue="true" />
+          </InputClaims>
+          <DisplayClaims>
+            <DisplayClaim ClaimTypeReferenceId="signInName" Required="true" />
+            <DisplayClaim ClaimTypeReferenceId="password" Required="true" />
+          </DisplayClaims>
+          <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="signInName" Required="true" />
+            <OutputClaim ClaimTypeReferenceId="password" Required="true" />
+            <OutputClaim ClaimTypeReferenceId="objectId" />
+            <OutputClaim ClaimTypeReferenceId="authenticationSource" />
+          </OutputClaims>
+
+          <UseTechnicalProfileForSessionManagement ReferenceId="SM-AAD" />
+	</TechnicalProfile>
+
+ 	 <TechnicalProfile Id="LocalAccount-SignIn">  
+    <DisplayName>Local account SignIn</DisplayName>
+    <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.SelfAssertedAttributeProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="objectId" />
+            <OutputClaim ClaimTypeReferenceId="email" />
+            <OutputClaim ClaimTypeReferenceId="executed-SelfAsserted-Input" DefaultValue="true" />
+            <OutputClaim ClaimTypeReferenceId="authenticationSource" />
+            <OutputClaim ClaimTypeReferenceId="newUser" />
+            <!-- Optional claims, to be collected from the user -->
+            <OutputClaim ClaimTypeReferenceId="displayName" />
+            <OutputClaim ClaimTypeReferenceId="givenName" />
+            <OutputClaim ClaimTypeReferenceId="surName" />
+            <OutputClaim ClaimTypeReferenceId="mobile" />
+            <OutputClaim ClaimTypeReferenceId="dateOfBirth" />
+          </OutputClaims>
+          <ValidationTechnicalProfiles>
+            <ValidationTechnicalProfile ReferenceId="LocalAccount-BASE" />
+          </ValidationTechnicalProfiles>
+          <UseTechnicalProfileForSessionManagement ReferenceId="SM-AAD" />
+        </TechnicalProfile>
+
+
+              <TechnicalProfile Id="LocalAccount-Link">
+          <DisplayName>Local account link</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.SelfAssertedAttributeProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <Metadata>
+            <Item Key="ClaimTypeOnWhichToEnable">issuers</Item>
+            <Item Key="ClaimValueOnWhichToEnable">local</Item>
+          </Metadata>
+          <!-- <IncludeInSso>false</IncludeInSso>
+          <InputClaims>
+            <InputClaim ClaimTypeReferenceId="localAccountEmail" PartnerClaimType="signInName"/>
+            <InputClaim ClaimTypeReferenceId="localAccountUpn"/>
+          </InputClaims> -->
+          <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="issuerUserIdToLink" PartnerClaimType="id" />
+            <OutputClaim ClaimTypeReferenceId="issuerToLink" DefaultValue="local" AlwaysUseDefaultValue="true" />
+            <OutputClaim ClaimTypeReferenceId="linkOrUnlink" DefaultValue="link" AlwaysUseDefaultValue="true" />
+          </OutputClaims>
+          <OutputClaimsTransformations>
+            <!-- <OutputClaimsTransformation ReferenceId="AssertEmailAndLinkedEmailAreEqual" /> -->
+            <OutputClaimsTransformation ReferenceId="CreateUserIdentityToLink" />
+            <OutputClaimsTransformation ReferenceId="AppendUserIdentityToLink" />
+          </OutputClaimsTransformations>
+          <!-- <ValidationTechnicalProfiles>
+            <ValidationTechnicalProfile ReferenceId="login-NonInteractive" />
+          </ValidationTechnicalProfiles> -->
+          <IncludeTechnicalProfile ReferenceId="LocalAccount-BASE" />
+          <UseTechnicalProfileForSessionManagement ReferenceId="SM-AAD" />
+          <EnabledForUserJourneys>OnItemAbsenceInStringCollectionClaim</EnabledForUserJourneys>
+        </TechnicalProfile>
+
+        <!-- <TechnicalProfile Id="LocalAccount-Unlink">
+          <DisplayName>Unlink LocalAccount</DisplayName>
+            <Metadata>
+ 	    <Item Key="api-version">1.6</Item>
+            <Item Key="Operation">Write</Item>
+            <Item Key="RaiseErrorIfClaimsPrincipalAlreadyExists">false</Item>
+            <Item Key="RaiseErrorIfClaimsPrincipalDoesNotExist">true</Item>
+            </Metadata>        
+          <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="issuerToUnlink" DefaultValue="local" AlwaysUseDefaultValue="true" />
+            <OutputClaim ClaimTypeReferenceId="linkOrUnlink" DefaultValue="unlink" AlwaysUseDefaultValue="true" />
+          </OutputClaims>
+          <IncludeTechnicalProfile ReferenceId="LocalAccount-Unlink" />
+        </TechnicalProfile>              -->
+      </TechnicalProfiles>
+    </ClaimsProvider>
